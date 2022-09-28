@@ -53,3 +53,12 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+
+*.geojson
+*.json
+
+.DS_Store
+
+*.ipynb
+
+*.xlsx

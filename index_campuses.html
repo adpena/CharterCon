@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Charter Con</title>
+     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+   integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+   crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+   integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+   crossorigin=""></script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster-src.min.js" type="text/javascript"></script>
+
+    <style>
+        #map { height: 600px; }
+    </style>
+</head>
+<body>
+    <div style="padding: 30px;">
+        <h2>CharterCon Map</h2>
+        <div id="map">
+
+        </div>
+    </div>
+
+
+    <script src="Districts2020to2021.js" type="text/javascript"></script>
+    <script src="2020-2021 AskTED_geocoded campuses.js" type="text/javascript"></script>
+
+    <script>
+        var map = L.map('map').setView([31.6623, -99.0306], 6);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        window.geojson = L.geoJSON(texasDistrictsFeatureCollection, {
+                style: {
+                    fillColor: 'white',
+                    weight: 1,
+                    opacity: 1,
+                    color: 'gray',
+                    fillOpacity: 0,
+                    smoothFactor: 0,
+                },
+        }).addTo(map)
+
+        console.log(geocodedCampuses);
+
+        var independentMarkers = L.markerClusterGroup();
+        var charterMarkers = L.markerClusterGroup();
+
+        for (let campusNumber of Object.keys(geocodedCampuses)) {
+            let campus = geocodedCampuses[campusNumber];
+
+            let popup = `
+            <div>
+                <p>District: ${campus['District Name']}</p>
+                <p>District Type: ${campus['District Type']}</p>
+                <p>School Name: ${campus['School Name']}</p>
+                <p>School Address: ${campus['School Site Street Address']}, ${campus['School Site City']}, ${campus['School Site State']} ${campus['School Site Zip']}</p>
+                <p>Grade Range: ${campus['Grade Range']}</p>
+                <p>School Enrollment as of 10/2020: ${campus['School Enrollment as of Oct 2020']}</p>
+            </div>
+            `;
+
+            if (campus['District Type'] === 'CHARTER') {
+
+                let newMarker = L.marker([parseFloat(campus['Campus Lat']), parseFloat(campus['Campus Lng'])]).bindPopup(popup);
+                charterMarkers.addLayer(newMarker)
+            } else {
+                let newMarker = L.marker([parseFloat(campus['Campus Lat']), parseFloat(campus['Campus Lng'])]).bindPopup(popup);
+                independentMarkers.addLayer(newMarker)
+            }
+        }
+
+        // independents.addTo(map)
+        // charters.addTo(map)
+
+        charterMarkers.addTo(map);
+
+        var overlayMaps = {
+            "Independent School Districts": independentMarkers,
+            "Charter Networks": charterMarkers,
+        }
+
+        var layerControl = L.control.layers(null, overlayMaps).addTo(map);
+
+    </script>
+</body>
+</html>
