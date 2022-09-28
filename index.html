@@ -19,6 +19,7 @@
     <script src="https://unpkg.com/leaflet-responsive-popup@1.0.0/leaflet.responsive.popup.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-responsive-popup@1.0.0/leaflet.responsive.popup.css" />
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         #map { height: 600px; }
@@ -86,9 +87,11 @@
 
     <div style="padding: 30px; margin-top: 65px;">
         <h2>#CharterCon Map</h2>
-        <div style="border: 1px solid lightgrey; border-radius: 4px; padding: 15px; margin-bottom: 15px;">
+        <div style="border: 1px solid lightgrey; border-radius: 4px; padding: 15px; margin-bottom: 15px; text-align: center;">
             <p>Between the years of XXXX and XXXX, funding for charter schools in Texas has grown XXXX.</p>
-            <p>GRAPH</p>
+            <canvas id="line-chart" style="height: 250px; width: 90%; margin: auto;">
+
+            </canvas>
             <p>Despite the changes made to the recapture formula under HB 3, certain districts are still paying hundreds of millions of dollars in recapture while unmet needs and inequity persist in their communities.</p>
             <p>The map below is shaded according to the 2020-2021 Cost of Recapture using Texas Education Agency data (2020-2021 PEIMS Actual).</p>
             <p>Click a district to learn more about the cost of recapture in XXXX.</p>
@@ -105,24 +108,35 @@
 
     <script>
 
-        function toggleLayers() {
-            var el = document.querySelector('input[name="layer"]:checked').value
-            if (el.value === "recapture") {
-                if (window.map.hasLayer(window.geojsonCharterCost)) {
-                    window.map.removeLayer(window.geojsonCharterCost);
-                    window.map.addLayer(window.geojson);
-                } else {
-                    window.map.addLayer(window.geojson);
-                }
-            } else {
-                if (window.map.hasLayer(window.geojson)) {
-                    window.map.removeLayer(window.geojson);
-                    window.map.addLayer(window.geojsonCharterCost);
-                } else {
-                    window.map.addLayer(window.geojsonCharterCost);
-                }
-            }
-        }
+        const labels = ["2013-2014", "2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019", "2019-2020", "2020-2021", "2021-2022"];
+
+        const data = {
+          labels: labels,
+          datasets: [{
+            label: 'Recapture',
+            data: [1204726917.00, 1483210047.00, 1575176794.00, 1698963451.00, 2004903422.00, 2686894150.00, 2557802934.00, 2968036681.00, 2998261724.00],
+            fill: false,
+            borderColor: 'red',
+            tension: 0
+          },
+          {
+            label: 'Charter State Aid',
+            data: [1560290922.00, 1804848762.00, 2031828350.00, 2258383892.00, 2553889593.00, 2858873871.00, 3236594340.00, 3680722080.00, 3783013179.00],
+            fill: false,
+            borderColor: 'blue',
+            tension: 0
+          }]
+        };
+
+        const config = {
+          type: 'line',
+          data: data,
+        };
+
+        const myChart = new Chart(
+            document.getElementById('line-chart'),
+            config
+          );
 
 
         var map = L.map('map').setView([31.6623, -99.0306], 6);
