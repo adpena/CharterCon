@@ -78,6 +78,15 @@
             opacity: 0.7;
         }
 
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+
+        td {
+            padding: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -363,15 +372,37 @@
                             </div>
                             <hr>
                             <div>
-                                <h4 style="text-align: center; padding-bottom: 0; margin-bottom: 0;"><a target="_blank">2020-2021 Funding Breakdown</a></h4>
-                                <table>
+                                <h4 style="text-align: center; padding-bottom: 0; margin-bottom: 0;"><a target="_blank" href="https://rptsvr1.tea.texas.gov/cgi/sas/broker?_service=marykay&_program=sfadhoc.actual_report_2021.sas&_service=appserv&_debug=0&who_box=${feature.properties.DISTRICT_C.toString()}">2020-2021 Funding Breakdown (All Funds)</a></h4>
+                                <table style="margin: auto; margin-top: 15px; margin-bottom: 15px;">
                                 <thead>
                                     <tr>
-                                        <td>Source</td>
-                                        <td>Amount</td>
-                                        <td>% Share</td>
+                                        <td style="text-align: center; font-weight: bold;">Source</td>
+                                        <td style="text-align: center; font-weight: bold;">Amount</td>
+                                        <td style="text-align: center; font-weight: bold;">% Share</td>
                                     </tr>
                                 </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Local</td>
+                                        <td>$${feature.properties.DistrictData.LocalFunding.toLocaleString()}</td>
+                                        <td>${((feature.properties.DistrictData.LocalFunding/(feature.properties.DistrictData.LocalFunding + feature.properties.DistrictData.StateFunding + feature.properties.DistrictData.FederalFunding + feature.properties.DistrictData.OtherLocalFunding)) * 100).toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>State</td>
+                                        <td>$${feature.properties.DistrictData.StateFunding.toLocaleString()}</td>
+                                        <td>${((feature.properties.DistrictData.StateFunding/(feature.properties.DistrictData.LocalFunding + feature.properties.DistrictData.StateFunding + feature.properties.DistrictData.FederalFunding + feature.properties.DistrictData.OtherLocalFunding)) * 100).toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Federal</td>
+                                        <td>$${feature.properties.DistrictData.FederalFunding.toLocaleString()}</td>
+                                        <td>${((feature.properties.DistrictData.FederalFunding/(feature.properties.DistrictData.LocalFunding + feature.properties.DistrictData.StateFunding + feature.properties.DistrictData.FederalFunding + feature.properties.DistrictData.OtherLocalFunding)) * 100).toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Other Local</td>
+                                        <td>$${feature.properties.DistrictData.OtherLocalFunding.toLocaleString()}</td>
+                                        <td>${((feature.properties.DistrictData.OtherLocalFunding/(feature.properties.DistrictData.LocalFunding + feature.properties.DistrictData.StateFunding + feature.properties.DistrictData.FederalFunding + feature.properties.DistrictData.OtherLocalFunding)) * 100).toFixed(2)}</td>
+                                    </tr>
+                                </tbody>
                                 </table>
                             </div>
                         </div>`);
